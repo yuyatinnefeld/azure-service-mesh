@@ -1,6 +1,6 @@
 variables:
   STATE_FILE_STORAGE: yuyatinnfeld-dev-bucket-12322
-  LOCATION: germany
+  LOCATION: germanywestcentral
 
 stages:
   - initial-setup
