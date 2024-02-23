@@ -1,0 +1,25 @@
+variables:
+  REPO_NAME: test-repo
+  APP_NAME: test-app
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - echo building....
+    - echo REPO_NAME= $REPO_NAME
+    - echo APP_NAME= $APP_NAME
+
+test:
+  stage: test
+  script:
+    - echo testing....
+
+deploy:
+  stage: deploy
+  script:
+    - echo deploying....
