@@ -17,10 +17,10 @@ create-statefile-bucket:
     - echo "Checking if $AZURE_STATE_FILE_STORAGE exists"
     - |
       if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_RESOURCE_GROUP &> /dev/null; then
+        echo "$AZURE_STATE_FILE_STORAGE already exists"
+      else
         echo "The statefile bucket does not exist. Creating..."
         az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
-      else
-        echo "$AZURE_STATE_FILE_STORAGE already exists"
       fi
   only:
     - main
