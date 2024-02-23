@@ -1,6 +1,7 @@
 variables:
-  STATE_FILE_STORAGE: terraformbucket
-  LOCATION: germanywestcentral
+  AZURE_STATE_FILE_STORAGE: terraformbucket
+  AZURE_LOCATION: germanywestcentral
+  AZURE_RESOURCE_GROUP: storage-resource-group
 
 stages:
   - initial-setup
@@ -11,9 +12,16 @@ create-statefile-bucket:
   image: mcr.microsoft.com/azure-cli
   stage: initial-setup
   script:
-    - echo "Generate the Terraform statefile bucket '$STATE_FILE_STORAGE' if it does not exist"
+    - echo "Generating the Terraform statefile bucket '$AZURE_STATE_FILE_STORAGE' if it does not exist"
     - az login --service-principal --username $AZURE_APP_ID --password $AZURE_PASSWORD --tenant $AZURE_TENANT
-    - az storage account create --name $STATE_FILE_STORAGE --resource-group storage-resource-group --location $LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+    - echo "Checking if $AZURE_STATE_FILE_STORAGE exists"
+    - |
+      if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_RESOURCE_GROUP &> /dev/null; then
+        echo "The statefile bucket does not exist. Creating..."
+        az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+      else
+        echo "$AZURE_STATE_FILE_STORAGE already exists"
+      fi
   only:
     - main
 
