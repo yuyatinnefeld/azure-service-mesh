@@ -11,8 +11,6 @@ build:
   stage: build
   script:
     - echo building....
-    - echo REPO_NAME= $REPO_NAME
-    - echo APP_NAME= $APP_NAME
 
 test:
   stage: test
@@ -20,6 +18,8 @@ test:
     - echo testing....
 
 deploy:
+  image: mcr.microsoft.com/azure-cli
   stage: deploy
   script:
     - echo deploying....
+    - az account list
