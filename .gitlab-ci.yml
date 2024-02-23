@@ -12,6 +12,7 @@ create-statefile-bucket:
   stage: initial-setup
   script:
     - echo "Generate the Terraform statefile bucket '$STATE_FILE_STORAGE' if it does not exist"
+    - az account show --query tenantId
     - az login --service-principal -u $AZURE_APP_ID -p $AZURE_PASSWORD --tenant $AZURE_TENANT
     - az storage account create --name $STATE_FILE_STORAGE --resource-group storage-resource-group --location $LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
   only:
