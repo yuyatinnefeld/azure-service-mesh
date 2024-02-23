@@ -1,25 +1,28 @@
 variables:
-  REPO_NAME: test-repo
-  APP_NAME: test-app
+  STATE_FILE_STORAGE: yuyatinnfeld-dev-bucket-12322
+  LOCATION: germany
 
 stages:
-  - build
-  - test
+  - init
+  - plan
   - deploy
 
-build:
-  stage: build
+init:
+  image: mcr.microsoft.com/azure-cli
+  stage: create-statefile-bucket
   script:
-    - echo building....
+    - echo "Generate the Terraform statefile bucket '$STATE_FILE_STORAGE' if it does not exist"
+    - az login --service-principal -u $AZURE_APP_ID -p $AZURE_PASSWORD --tenant $AZURE_TENANT
+    - az storage account create --name $STATE_FILE_STORAGE --resource-group storage-resource-group --location $LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+  only:
+    - main
 
-test:
-  stage: test
+plan:
+  stage: terraform-plan
   script:
-    - echo testing....
+    - echo planing....
 
 deploy:
-  image: mcr.microsoft.com/azure-cli
-  stage: deploy
+  stage: terraform-apply
   script:
     - echo deploying....
-    - az account list
