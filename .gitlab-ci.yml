@@ -55,7 +55,7 @@ stages:
 terraform-plan-dev:
   extends: 
     - .terraform-plan
-  before_script:s
+  before_script:
     - cd $TF_DIR
     - terraform init -backend-config=env/dev.tfbackend
   variables:
