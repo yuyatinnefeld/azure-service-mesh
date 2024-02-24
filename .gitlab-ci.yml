@@ -13,7 +13,7 @@ stages:
   image: mcr.microsoft.com/azure-cli
   stage: initial-setup
   before_script:
-    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_PASSWORD_DEV --tenant $AZURE_TENANT_DEV 
+    - az login --service-principal --username $AZURE_APP_ID --password $AZURE_PASSWORD --tenant $AZURE_TENANT
   script:
     - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
     - |
