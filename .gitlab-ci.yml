@@ -2,84 +2,103 @@ variables:
   AZURE_LOCATION: germanywestcentral
   CONTAINER_NAME: tfstate
 
-
 stages:
-  - initial-setup
-  - terraform-plan
-  - terraform-apply
+  - prepare
+  - validate
+  #- initial-setup
+  #- terraform-plan
+  #- terraform-apply
+
+include:
+  - template: Terraform/Base.gitlab-ci.yml
+
+before_script:
+  - export TF_VAR_ARM_TENANT_ID=$AZURE_TENANT_DEV
+  - export TF_VAR_ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID_DEV
+  - export TF_VAR_ARM_CLIENT_ID=$AZURE_APP_ID_DEV
+  - export TF_VAR_ARM_CLIENT_SECRET=$AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV
+
+init:
+  stage: prepare
+  script:
+    - gitlab-terraform init -backend-config=env/dev.tfbackend
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+
+validate:
+  stage: validate
+  script:
+    - gitlab-terraform validate
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
 
 ############################ create statefile bucket ############################
 
-.create-statefile-bucket:
-  image: mcr.microsoft.com/azure-cli
-  stage: initial-setup
-  script:
-    - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
-    - |
-      if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
-        echo "✨ $AZURE_STATE_FILE_STORAGE already exists"
-      else
-        echo "🔧 The statefile bucket does not exist. Creating"
-        # Create resource group
-        az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
-        # Create storage account
-        az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
-        # Create blob container
-        az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
-      fi
+# # # # .create-statefile-bucket:
+# # # #   image: mcr.microsoft.com/azure-cli
+# # # #   stage: initial-setup
+# # # #   script:
+# # # #     - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
+# # # #     - |
+# # # #       if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
+# # # #         echo "✨ $AZURE_STATE_FILE_STORAGE already exists"
+# # # #       else
+# # # #         echo "🔧 The statefile bucket does not exist. Creating"
+# # # #         # Create resource group
+# # # #         az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
+# # # #         # Create storage account
+# # # #         az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+# # # #         # Create blob container
+# # # #         az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
+# # # #       fi
 
-create-statefile-bucket-dev:
-  extends: 
-    - .create-statefile-bucket
-  before_script:
-    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
-  variables:
-    AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
-    AZURE_STATE_FILE_STORAGE: terraformdev4711
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+# # # # create-statefile-bucket-dev:
+# # # #   extends: 
+# # # #     - .create-statefile-bucket
+# # # #   before_script:
+# # # #     - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
+# # # #   variables:
+# # # #     AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
+# # # #     AZURE_STATE_FILE_STORAGE: terraformdev4711
+# # # #   rules:
+# # # #     - if: $CI_COMMIT_BRANCH == "develop"
 
-############################ show terraform resources ############################
+# # # # ############################ show terraform resources ############################
 
-.terraform-plan:
-  image: hashicorp/terraform:light
-  stage: terraform-plan
-  script:
-    - terraform plan -vars-file $TFVARS_FILE -out=tfplan
-  artifacts:
-    paths:
-      - tfplan
+# # # # .terraform-plan:
+# # # #   image: hashicorp/terraform:light
+# # # #   stage: terraform-plan
+# # # #   script:
+# # # #     - terraform plan -vars-file $TFVARS_FILE -out=tfplan
+# # # #   artifacts:
+# # # #     paths:
+# # # #       - tfplan
 
-terraform-plan-dev:
-  extends: 
-    - .terraform-plan
-  before_script:
-    - export TF_VAR_ARM_TENANT_ID=$AZURE_TENANT_DEV
-    - export TF_VAR_ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID_DEV
-    - export TF_VAR_ARM_CLIENT_ID=$AZURE_APP_ID_DEV
-    - export TF_VAR_ARM_CLIENT_SECRET=$AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV
-    - cd $TF_DIR
-    - terraform init -backend-config=env/dev.tfbackend
-  variables:
-    TF_DIR: iac
-    TFVARS_FILE: env/dev.tfvars
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+# # # # terraform-plan-dev:
+# # # #   extends: 
+# # # #     - .terraform-plan
+# # # #     - cd $TF_DIR
+# # # #     - terraform init -backend-config=env/dev.tfbackend
+# # # #   variables:
+# # # #     TF_DIR: iac
+# # # #     TFVARS_FILE: env/dev.tfvars
+# # # #   rules:
+# # # #     - if: $CI_COMMIT_BRANCH == "develop"
 
-############################ create terraform resources ############################
+# # # # ############################ create terraform resources ############################
 
-.terraform-apply:
-  stage: terraform-apply
-  script:
-    - terraform apply tfplan --auto-approve
+# # # # .terraform-apply:
+# # # #   stage: terraform-apply
+# # # #   script:
+# # # #     - terraform apply tfplan --auto-approve
 
-terraform-apply-dev:
-  extends: 
-    - .terraform-apply
-  before_script:
-    - cd $TF_DIR
-  variables:
-    TF_DIR: iac
-    TFVARS_FILE: env/dev.tfvars
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+# # # # terraform-apply-dev:
+# # # #   extends: 
+# # # #     - .terraform-apply
+# # # #   before_script:
+# # # #     - cd $TF_DIR
+# # # #   variables:
+# # # #     TF_DIR: iac
+# # # #     TFVARS_FILE: env/dev.tfvars
+# # # #   rules:
+# # # #     - if: $CI_COMMIT_BRANCH == "develop"
