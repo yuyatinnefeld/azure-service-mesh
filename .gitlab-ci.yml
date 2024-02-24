@@ -1,7 +1,7 @@
 variables:
   AZURE_LOCATION: germanywestcentral
-  AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
-  AZURE_STATE_FILE_STORAGE: terraformdev
+  AZURE_STORAGE_RESOURCE_GROUP_DEV: storage-resource-group-dev
+  AZURE_STATE_FILE_STORAGE_DEV: terraformdev
   CONTAINER_NAME: tfstate
 
 
@@ -18,18 +18,18 @@ create-statefile-bucket:
   script:
     - echo "---------------- STATEFILE CREATING ----------------"
     - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
-    - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
+    - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE_DEV exists"
     - |
-      if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
-        echo "✨ $AZURE_STATE_FILE_STORAGE already exists"
+      if az storage account show --name $AZURE_STATE_FILE_STORAGE_DEV --resource-group $AZURE_STORAGE_RESOURCE_GROUP_DEV &> /dev/null; then
+        echo "✨ $AZURE_STATE_FILE_STORAGE_DEV already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
         # Create resource group
-        az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
+        az group create --name $AZURE_STORAGE_RESOURCE_GROUP_DEV --location $AZURE_LOCATION
         # Create storage account
-        az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+        az storage account create --name $AZURE_STATE_FILE_STORAGE_DEV --resource-group $AZURE_STORAGE_RESOURCE_GROUP_DEV --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
         # Create blob container
-        az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
+        az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE_DEV
       fi
   only:
     - devlop
