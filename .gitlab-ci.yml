@@ -1,5 +1,5 @@
 image: 
-  name: mcr.microsoft.com/terraform-on-azure/shell:latest
+  name: hashicorp/terraform:latest
   entrypoint:
     - '' # DON'T FORGET SET ENTRYPOINT -> Reason Dockerfile has ENTRYPOINT ["terraform"]
 
