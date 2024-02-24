@@ -1,21 +1,18 @@
 variables:
-  AZURE_STATE_FILE_STORAGE: terraformbucket$RANDOM
   AZURE_LOCATION: germanywestcentral
-  AZURE_RESOURCE_GROUP: storage-resource-group
   CONTAINER_NAME: tfstate
-
 
 stages:
   - initial-setup
   - terraform-plan
   - terraform-deploy
 
-create-statefile-bucket:
+############################ create statefile bucket ############################
+
+.create-statefile-bucket:
   image: mcr.microsoft.com/azure-cli
   stage: initial-setup
   script:
-    - echo "---------------- STATEFILE CREATING ----------------"
-    - az login --service-principal --username $AZURE_APP_ID --password $AZURE_PASSWORD --tenant $AZURE_TENANT
     - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
     - |
       if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_RESOURCE_GROUP &> /dev/null; then
@@ -29,15 +26,29 @@ create-statefile-bucket:
         # Create blob container
         az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
       fi
-  only:
-    - main
 
-terraform-plan:
+create-statefile-bucket-dev:
+  extends: 
+    - .create-statefile-bucket
+  before_script:
+    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_PASSWORD_DEV --tenant $AZURE_TENANT_DEV 
+  variables:
+    AZURE_STATE_FILE_STORAGE: terraformdev
+    AZURE_RESOURCE_GROUP: storage-resource-group-dev
+  only: 
+    - develop
+
+############################ show terraform resources ############################
+
+terraform-plan-dev:
   stage: terraform-plan
   script:
     - echo planing....
+    - echo terraform apply -vars-file terraform.tfvars
 
-terraform-deploy:
+############################ create terraform resources ############################
+
+terraform-deploy-dev:
   stage: terraform-deploy
   script:
     - echo deploying....
