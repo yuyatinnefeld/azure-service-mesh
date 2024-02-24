@@ -57,9 +57,18 @@ terraform-plan-dev:
     - .terraform-plan
   before_script:
     - cd $TF_DIR
-    - terraform init -backend-config=env/dev.tfbackend
+    - |
+      terraform init \
+        -backend-config=address=${TF_ADDRESS} \
+        -backend-config=lock_address=${GITLAB_ADDRESS}/lock \
+        -backend-config=unlock_address=${GITLAB_ADDRESS}/lock \
+        -backend-config=username=${GITLAB_USERNAME} \
+        -backend-config=password=${GITLAB_PERSONAL_ACCESS_TOKEN} \
+        -backend-config=lock_method=POST \
+        -backend-config=unlock_method=DELETE \
+        -backend-config=retry_wait_min=5
   variables:
     TF_DIR: iac
-    TFVARS_FILE: env/dev.tfvars
+    GITLAB_ADDRESS: "https://gitlab.com/api/v4/projects/55224873/terraform/state/old-state-name"
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
