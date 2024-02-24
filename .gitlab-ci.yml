@@ -1,7 +1,7 @@
 variables:
-  AZURE_STATE_FILE_STORAGE: terraformbucket$RANDOM
   AZURE_LOCATION: germanywestcentral
-  AZURE_RESOURCE_GROUP: storage-resource-group
+  AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
+  AZURE_STATE_FILE_STORAGE: terraformdev
   CONTAINER_NAME: tfstate
 
 
@@ -20,19 +20,19 @@ create-statefile-bucket:
     - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
     - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
     - |
-      if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_RESOURCE_GROUP &> /dev/null; then
+      if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
         echo "✨ $AZURE_STATE_FILE_STORAGE already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
         # Create resource group
-        az group create --name $AZURE_RESOURCE_GROUP --location $AZURE_LOCATION
+        az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
         # Create storage account
-        az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+        az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
         # Create blob container
         az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
       fi
   only:
-    - main
+    - devlop
 
 ############################ show terraform resources ############################
 
