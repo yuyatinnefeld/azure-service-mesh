@@ -1,0 +1,4 @@
+resource_group_name  = "storage-resource-group-prod"
+storage_account_name = "terraformprod"
+container_name       = "tfstate"
+key                  = "terraform.tfstate"
