@@ -12,6 +12,8 @@ stages:
 .create-statefile-bucket:
   image: mcr.microsoft.com/azure-cli
   stage: initial-setup
+  before_script:
+    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_PASSWORD_DEV --tenant $AZURE_TENANT_DEV 
   script:
     - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
     - |
@@ -30,8 +32,6 @@ stages:
 create-statefile-bucket-dev:
   extends: 
     - .create-statefile-bucket
-  before_script:
-    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_PASSWORD_DEV --tenant $AZURE_TENANT_DEV 
   variables:
     AZURE_STATE_FILE_STORAGE: terraformdev
     AZURE_RESOURCE_GROUP: storage-resource-group-dev
