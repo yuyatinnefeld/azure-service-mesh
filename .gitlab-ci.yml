@@ -5,61 +5,59 @@ image:
 
 variables:
   AZURE_LOCATION: germanywestcentral
+  AZURE_STATE_FILE_STORAGE: terraform
   CONTAINER_NAME: tfstate
+  TF_DIR: iac
 
 stages:
-  #- initial-setup
+  - initial-setup
   - terraform-plan
 
 ############################ create statefile bucket ############################
 
-# # # # .create-statefile-bucket:
-# # # #   image: mcr.microsoft.com/azure-cli
-# # # #   stage: initial-setup
-# # # #   script:
-# # # #     - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
-# # # #     - |
-# # # #       if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
-# # # #         echo "✨ $AZURE_STATE_FILE_STORAGE already exists"
-# # # #       else
-# # # #         echo "🔧 The statefile bucket does not exist. Creating"
-# # # #         # Create resource group
-# # # #         az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
-# # # #         # Create storage account
-# # # #         az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
-# # # #         # Create blob container
-# # # #         az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
-# # # #       fi
+.create-statefile-bucket:
+  image: mcr.microsoft.com/azure-cli
+  stage: initial-setup
+  script:
+    - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
+    - |
+      if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
+        echo "✨ $AZURE_STATE_FILE_STORAGE already exists"
+      else
+        echo "🔧 The statefile bucket does not exist. Creating"
+        # Create resource group
+        az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
+        # Create storage account
+        az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+        # Create blob container
+        az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
+      fi
 
-# # # # create-statefile-bucket-dev:
-# # # #   extends: 
-# # # #     - .create-statefile-bucket
-# # # #   before_script:
-# # # #     - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
-# # # #   variables:
-# # # #     AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
-# # # #     AZURE_STATE_FILE_STORAGE: terraformdev4711
-# # # #   rules:
-# # # #     - if: $CI_COMMIT_BRANCH == "develop"
+create-statefile-bucket-dev:
+  extends: 
+    - .create-statefile-bucket
+  before_script:
+    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
+  variables:
+    AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
 
 ############################ show terraform resources ############################
 
-.terraform-plan:
-  stage: terraform-plan
-  script:
-    - terraform plan -vars-file $TFVARS_FILE -out=tfplan
-  artifacts:
-    paths:
-      - tfplan
+# # .terraform-plan:
+# #   stage: terraform-plan
+# #   script:
+# #     - terraform plan -var-file=env/dev.tfvars -out=tfplan
+# #   artifacts:
+# #     paths:
+# #       - tfplan
 
-terraform-plan-dev:
-  extends: 
-    - .terraform-plan
-  before_script:
-    - cd $TF_DIR
-    - terraform init -backend-config="env/dev.tfbackend"
-  variables:
-    TF_DIR: iac
-    GITLAB_ADDRESS: "https://gitlab.com/api/v4/projects/55224873/terraform/state/default"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+# # terraform-plan-dev:
+# #   extends: 
+# #     - .terraform-plan
+# #   before_script:
+# #     - cd $TF_DIR
+# #     - terraform init -backend-config="env/dev.tfbackend"
+# #   rules:
+# #     - if: $CI_COMMIT_BRANCH == "develop"
