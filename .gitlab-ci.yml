@@ -5,7 +5,7 @@ image:
 
 variables:
   AZURE_LOCATION: germanywestcentral
-  AZURE_STATE_FILE_STORAGE: terraform
+  AZURE_STATE_FILE_STORAGE: yuyastatefiledev
   CONTAINER_NAME: tfstate
   TF_DIR: iac
 
