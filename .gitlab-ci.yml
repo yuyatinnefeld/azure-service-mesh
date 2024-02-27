@@ -8,6 +8,7 @@ stages:
   - initial-setup
   - terraform-plan
   - terraform-apply
+  - terraform-destroy
 
 ############################ create statefile bucket ############################
 
