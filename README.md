@@ -55,6 +55,10 @@ Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/gui
 
 3. Allowing the Service Principal to manage the Subscription
 
+###### Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
+AZURE_CLIENT_ID_DEV
+AZURE_CLIENT_SECRET
+
 
 ## Clean up
 Execute the following commands to clean up resources:
