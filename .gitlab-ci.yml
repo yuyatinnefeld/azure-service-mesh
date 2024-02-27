@@ -58,10 +58,9 @@ before_script:
   stage: terraform-plan
   script:
     - terraform plan -var-file=env/dev.tfvars -out=tfplan
-    - mv tfplan tfplan.json
   artifacts:
     paths:
-      - tfplan.json
+      - $TERRAFORM_DIR
 
 terraform-plan-dev:
   extends: 
@@ -73,7 +72,7 @@ terraform-plan-dev:
   stage: terraform-apply
   script:
     - ls
-    - terraform apply tfplan.json
+    - terraform apply tfplan
 
 terraform-apply-dev:
   extends: 
