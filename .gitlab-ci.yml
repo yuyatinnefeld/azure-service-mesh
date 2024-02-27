@@ -71,7 +71,6 @@ terraform-plan-dev:
 .terraform-apply:
   stage: terraform-apply
   script:
-    - ls
     - terraform apply tfplan
 
 terraform-apply-dev:
