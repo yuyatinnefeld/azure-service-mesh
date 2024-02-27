@@ -61,6 +61,8 @@ before_script:
   artifacts:
     paths:
       - $TERRAFORM_DIR
+    expire_in: 1 hrs
+
 
 terraform-plan-dev:
   extends: 
