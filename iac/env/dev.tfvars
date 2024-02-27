@@ -1,2 +1,2 @@
 ### STORAGE BUCKET ENV ####
-azure_storage_account_name = "yuyatinnefeldatabucket"
+azure_storage_account_name = "yuyatinnefeldbucketdev"
