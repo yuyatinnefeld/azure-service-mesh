@@ -4,6 +4,7 @@ resource "azurerm_container_registry" "acr" {
   location            = var.azure_project_location
   sku                 = "Premium"
   admin_enabled       = false
+
   georeplications {
     location                = var.azure_project_location
     zone_redundancy_enabled = true

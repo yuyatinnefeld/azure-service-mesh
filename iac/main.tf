@@ -26,12 +26,12 @@ module "storage_account" {
 
 }
 
-# module "container_registry" {
-#   source                        = "./modules/container-registry"
-#   azure_project_location        = var.azure_project_location
-#   azure_resource_group          = var.azure_resource_group
-#   azure_container_registry_name = var.azure_container_registry_name
-# }
+module "container_registry" {
+  source                        = "./modules/container-registry"
+  azure_project_location        = var.azure_project_location
+  azure_resource_group          = var.azure_resource_group
+  azure_container_registry_name = var.azure_container_registry_name
+}
 
 # module "aks_cluster" {
 #   source                     = "./modules/aks-cluster"
