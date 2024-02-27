@@ -63,7 +63,6 @@ before_script:
       - $TERRAFORM_DIR
     expire_in: 1 hrs
 
-
 terraform-plan-dev:
   extends: 
     - .terraform-plan

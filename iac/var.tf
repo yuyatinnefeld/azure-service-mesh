@@ -1,4 +1,4 @@
-variable "azure_bucket_location" {
+variable "azure_project_location" {
   type    = string
   default = "germanywestcentral"
 }
@@ -11,6 +11,11 @@ variable "azure_resource_group" {
 variable "azure_storage_account_name" {
   type = string
 }
+
+variable "azure_container_registry_name" {
+  type = string
+}
+
 
 # Azure Service Principal
 variable "ARM_TENANT_ID" {}

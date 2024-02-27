@@ -18,26 +18,19 @@ provider "azurerm" {
 
 }
 
-resource "azurerm_storage_account" "storage_account_analytics" {
-  name                     = var.azure_storage_account_name
-  resource_group_name      = var.azure_resource_group
-  location                 = var.azure_bucket_location
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
+module "storage_account" {
+  source                     = "./modules/storage-account"
+  azure_project_location     = var.azure_project_location
+  azure_resource_group       = var.azure_resource_group
+  azure_storage_account_name = var.azure_storage_account_name
 
-  tags = {
-    environment = "staging"
-  }
-}
-
-resource "azurerm_storage_container" "example" {
-  name                  = "content"
-  storage_account_name  = azurerm_storage_account.storage_account_analytics.name
-  container_access_type = "private"
 }
 
 # module "container_registry" {
-#   source                     = "./modules/container-registry"
+#   source                        = "./modules/container-registry"
+#   azure_project_location        = var.azure_project_location
+#   azure_resource_group          = var.azure_resource_group
+#   azure_container_registry_name = var.azure_container_registry_name
 # }
 
 # module "aks_cluster" {
