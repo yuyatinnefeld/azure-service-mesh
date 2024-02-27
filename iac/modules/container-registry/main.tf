@@ -1,12 +1,12 @@
-resource "azurerm_resource_group" "container_resources" {
-  name     = "container-registry-resources"
-  location = "West Europe"
+resource "azurerm_resource_group" "arg_container" {
+  name     = var.azure_container_resouce_group
+  location = var.azure_container_registry_location
 }
 
 resource "azurerm_container_registry" "acr" {
   name                = var.azure_container_registry_name
-  resource_group_name = azurerm_resource_group.container_resources.name
-  location            = azurerm_resource_group.container_resources.location
+  resource_group_name = azurerm_resource_group.arg_container.name
+  location            = azurerm_resource_group.arg_container.location
   sku                 = "Premium"
   admin_enabled       = false
 

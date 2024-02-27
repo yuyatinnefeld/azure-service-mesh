@@ -20,18 +20,18 @@ provider "azurerm" {
 
 module "storage_account" {
   source                     = "./modules/storage-account"
-  azure_project_location     = var.azure_project_location
+  env                        = var.env
+  azure_storage_location     = var.azure_storage_location
   azure_resource_group       = var.azure_resource_group
   azure_storage_account_name = var.azure_storage_account_name
-  env                        = var.env
 }
 
 module "container_registry" {
-  source                        = "./modules/container-registry"
-  azure_project_location        = var.azure_project_location
-  azure_container_registry_name = var.azure_container_registry_name
-  env                           = var.env
-  depends_on                    = [module.storage_account]
+  source                            = "./modules/container-registry"
+  env                               = var.env
+  azure_container_registry_name     = var.azure_container_registry_name
+  azure_container_registry_location = var.azure_container_registry_location
+  depends_on                        = [module.storage_account]
 }
 
 # module "aks_cluster" {

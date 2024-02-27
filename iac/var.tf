@@ -2,7 +2,7 @@ variable "env" {
   type = string
 }
 
-variable "azure_project_location" {
+variable "azure_storage_location" {
   type    = string
   default = "germanywestcentral"
 }
@@ -12,6 +12,16 @@ variable "azure_resource_group" {
   default = "storage-resource-group"
 }
 
+variable "azure_container_resouce_group" {
+  type    = string
+  default = "container-registry-resources"
+}
+
+variable "azure_container_registry_location" {
+  type    = string
+  default = "West Europe"
+}
+
 variable "azure_storage_account_name" {
   type = string
 }
@@ -19,7 +29,6 @@ variable "azure_storage_account_name" {
 variable "azure_container_registry_name" {
   type = string
 }
-
 
 # Azure Service Principal
 variable "ARM_TENANT_ID" {}
