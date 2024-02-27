@@ -59,7 +59,7 @@ before_script:
   script:
     - terraform plan -var-file=env/dev.tfvars -out=tfplan
   artifacts:
-      paths:
+    paths:
         - tfplan
     only:
       changes:
