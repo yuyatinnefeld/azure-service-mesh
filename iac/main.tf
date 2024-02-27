@@ -31,8 +31,11 @@ module "container_registry" {
   azure_project_location        = var.azure_project_location
   azure_container_registry_name = var.azure_container_registry_name
   env                           = var.env
+  depends_on                    = [module.storage_account]
 }
 
 # module "aks_cluster" {
-#   source = "./modules/aks-cluster"
+#   source     = "./modules/aks-cluster"
+#   env        = var.env
+#   depends_on = [module.container_registry]
 # }
