@@ -7,6 +7,7 @@ variables:
 stages:
   - initial-setup
   - terraform-plan
+  - terraform-apply
 
 ############################ create statefile bucket ############################
 
@@ -70,7 +71,7 @@ terraform-plan-dev:
 
 
 .terraform-apply:
-  stage: terraform-plan
+  stage: terraform-apply
   script:
     - terraform apply tfplan
 
