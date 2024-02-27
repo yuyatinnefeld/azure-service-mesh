@@ -60,11 +60,10 @@ before_script:
     - terraform plan -var-file=env/dev.tfvars -out=tfplan
   artifacts:
     paths:
-        - tfplan
-    only:
-      changes:
-        - '*.tf' # Trigger the pipeline when there are changes in Terraform configuration files
-
+      - tfplan
+  only:
+    changes:
+      - '*.tf' # Trigger the pipeline when there a
 
 terraform-plan-dev:
   extends: 
