@@ -61,9 +61,6 @@ before_script:
   artifacts:
     paths:
       - tfplan
-  only:
-    changes:
-      - '*.tf' # Trigger the pipeline when there a
 
 terraform-plan-dev:
   extends: 
