@@ -60,21 +60,19 @@ before_script:
     - terraform plan -var-file=env/dev.tfvars -out=tfplan
   artifacts:
     paths:
-      - $TERRAFORM_DIR
+      - ./tfplan
 
 terraform-plan-dev:
   extends: 
     - .terraform-plan
-
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
-
 
 .terraform-apply:
   stage: terraform-apply
   script:
     - ls
-    - terraform apply $TERRAFORM_DIR/tfplan
+    - terraform apply tfplan
 
 terraform-apply-dev:
   extends: 
