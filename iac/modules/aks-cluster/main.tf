@@ -15,7 +15,7 @@ resource "azurerm_kubernetes_cluster" "example" {
   }
 
   tags = {
-    Environment = var.env
+    environment = var.env
   }
 }
 
