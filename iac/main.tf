@@ -23,16 +23,16 @@ module "storage_account" {
   azure_project_location     = var.azure_project_location
   azure_resource_group       = var.azure_resource_group
   azure_storage_account_name = var.azure_storage_account_name
-
+  env                        = var.env
 }
 
 module "container_registry" {
   source                        = "./modules/container-registry"
   azure_project_location        = var.azure_project_location
-  azure_resource_group          = var.azure_resource_group
   azure_container_registry_name = var.azure_container_registry_name
+  env                           = var.env
 }
 
 # module "aks_cluster" {
-#   source                     = "./modules/aks-cluster"
+#   source = "./modules/aks-cluster"
 # }

@@ -1,3 +1,7 @@
+variable "env" {
+  type = string
+}
+
 variable "azure_project_location" {
   type    = string
   default = "germanywestcentral"
@@ -5,7 +9,7 @@ variable "azure_project_location" {
 
 variable "azure_resource_group" {
   type    = string
-  default = "storage-resource-group-dev"
+  default = "storage-resource-group"
 }
 
 variable "azure_storage_account_name" {
