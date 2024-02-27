@@ -4,7 +4,8 @@ variable "azure_bucket_location" {
 }
 
 variable "azure_resource_group" {
-  type = string
+  type    = string
+  default = "storage-resource-group-dev"
 }
 
 variable "azure_storage_account_name" {

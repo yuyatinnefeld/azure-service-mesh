@@ -1,3 +1,2 @@
 ### STORAGE BUCKET ENV ####
-azure_state_file_bucket = "terraformprod"
-azure_resource_group    = "storage-resource-group-prod"
+azure_storage_account_name = "yuyatinnefeldbucketprod"
