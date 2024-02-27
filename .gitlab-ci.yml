@@ -1,13 +1,8 @@
-image: 
-  name: hashicorp/terraform:latest
-  entrypoint:
-    - '' # DON'T FORGET SET ENTRYPOINT -> Reason Dockerfile has ENTRYPOINT ["terraform"]
-
 variables:
   AZURE_LOCATION: germanywestcentral
-  AZURE_STATE_FILE_STORAGE: yuyastatefiledev
-  CONTAINER_NAME: tfstate
-  TF_DIR: iac
+  AZURE_STORAGE_CONTAINER_NAME: tfstate
+  AZURE_STORAGE_TF_STATEFILE: yuyastatefiledev
+  TERRAFORM_DIR: iac
 
 stages:
   - initial-setup
@@ -19,18 +14,18 @@ stages:
   image: mcr.microsoft.com/azure-cli
   stage: initial-setup
   script:
-    - echo "🔍️ Checking if $AZURE_STATE_FILE_STORAGE exists"
+    - echo "🔍️ Checking if $AZURE_STORAGE_TF_STATEFILE exists"
     - |
-      if az storage account show --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
-        echo "✨ $AZURE_STATE_FILE_STORAGE already exists"
+      if az storage account show --name $AZURE_STORAGE_TF_STATEFILE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
+        echo "✨ $AZURE_STORAGE_TF_STATEFILE already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
         # Create resource group
         az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
         # Create storage account
-        az storage account create --name $AZURE_STATE_FILE_STORAGE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+        az storage account create --name $AZURE_STORAGE_TF_STATEFILE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
         # Create blob container
-        az storage container create --name $CONTAINER_NAME --account-name $AZURE_STATE_FILE_STORAGE
+        az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE
       fi
 
 create-statefile-bucket-dev:
@@ -45,35 +40,42 @@ create-statefile-bucket-dev:
 
 ############################ show terraform resources ############################
 
-# # .terraform-plan:
-# #   stage: terraform-plan
-# #   script:
-# #     - terraform plan -var-file=env/dev.tfvars -out=tfplan
-# #   artifacts:
-# #     paths:
-# #       - tfplan
+image: 
+  name: hashicorp/terraform:latest
+  entrypoint:
+    - '' # DON'T FORGET SET ENTRYPOINT -> Reason Dockerfile has ENTRYPOINT ["terraform"]
 
-# # terraform-plan-dev:
-# #   extends: 
-# #     - .terraform-plan
-# #   before_script:
-# #     - cd $TF_DIR
-# #     - terraform init -backend-config="env/dev.tfbackend"
-# #   rules:
-# #     - if: $CI_COMMIT_BRANCH == "develop"
+before_script:
+  - export TF_VAR_ARM_TENANT_ID=$AZURE_TENANT_DEV
+  - export TF_VAR_ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID_DEV
+  - export TF_VAR_ARM_CLIENT_ID=$AZURE_CLIENT_ID_DEV
+  - export TF_VAR_ARM_CLIENT_SECRET=$AZURE_CLIENT_SECRET
+  - cd $TERRAFORM_DIR
+  - terraform init -backend-config="env/dev.tfbackend"
+
+.terraform-plan:
+  stage: terraform-plan
+  script:
+    - terraform plan -var-file=env/dev.tfvars -out=tfplan
+  artifacts:
+    paths:
+      - tfplan
+
+terraform-plan-dev:
+  extends: 
+    - .terraform-plan
+
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
 
 
-# # .terraform-apply:
-# #   stage: terraform-plan
-# #   script:
-# #     - terraform apply tfplan
+.terraform-apply:
+  stage: terraform-plan
+  script:
+    - terraform apply tfplan
 
-# # terraform-apply-dev:
-# #   extends: 
-# #     - .terraform-apply
-# #   before_script:
-# #     - cd $TF_DIR
-# #     - terraform init -backend-config="env/dev.tfbackend"
-# #   rules:
-# #     - if: $CI_COMMIT_BRANCH == "develop"
-# 
+terraform-apply-dev:
+  extends: 
+    - .terraform-apply
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
