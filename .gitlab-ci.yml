@@ -79,3 +79,15 @@ terraform-apply-dev:
     - .terraform-apply
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
+
+.terraform-destroy:
+  stage: terraform-destroy
+  script:
+    - terraform destroy -var-file=env/dev.tfvars --auto-approve
+
+terraform-destroy-dev:
+  extends: 
+    - .terraform-destroy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual

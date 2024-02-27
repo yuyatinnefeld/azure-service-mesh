@@ -1,4 +1,4 @@
-resource "azurerm_storage_account" "storage_account_analytics" {
+resource "azurerm_storage_account" "storage_example_bucket" {
   name                     = var.azure_storage_account_name
   resource_group_name      = var.azure_resource_group
   location                 = var.azure_project_location
@@ -12,6 +12,6 @@ resource "azurerm_storage_account" "storage_account_analytics" {
 
 resource "azurerm_storage_container" "example" {
   name                  = "content"
-  storage_account_name  = azurerm_storage_account.storage_account_analytics.name
+  storage_account_name  = azurerm_storage_account.storage_example_bucket.name
   container_access_type = "private"
 }
