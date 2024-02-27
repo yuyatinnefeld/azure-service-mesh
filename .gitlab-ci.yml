@@ -38,7 +38,7 @@ create-statefile-bucket-dev:
   variables:
     AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "initial"
 
 ############################ show terraform resources ############################
 
