@@ -31,6 +31,7 @@ module "container_registry" {
   env                               = var.env
   azure_container_registry_name     = var.azure_container_registry_name
   azure_container_registry_location = var.azure_container_registry_location
+  azure_container_resouce_group     = var.azure_container_resouce_group
   depends_on                        = [module.storage_account]
 }
 
