@@ -73,6 +73,7 @@ terraform-plan-dev:
   stage: terraform-deploy
   script:
     - terraform apply tfplan
+  when: manual
 
 terraform-apply-dev:
   extends: 
@@ -84,10 +85,10 @@ terraform-apply-dev:
   stage: terraform-deploy
   script:
     - terraform destroy -var-file=env/dev.tfvars --auto-approve
+  when: manual
 
 terraform-destroy-dev:
   extends: 
     - .terraform-destroy
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
-      when: manual
