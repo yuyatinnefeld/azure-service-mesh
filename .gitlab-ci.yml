@@ -7,8 +7,7 @@ variables:
 stages:
   - initial-setup
   - terraform-plan
-  - terraform-apply
-  - terraform-destroy
+  - terraform-deploy
 
 ############################ create statefile bucket ############################
 
@@ -71,7 +70,7 @@ terraform-plan-dev:
     - if: $CI_COMMIT_BRANCH == "develop"
 
 .terraform-apply:
-  stage: terraform-apply
+  stage: terraform-deploy
   script:
     - terraform apply tfplan
 
@@ -82,7 +81,7 @@ terraform-apply-dev:
     - if: $CI_COMMIT_BRANCH == "develop"
 
 .terraform-destroy:
-  stage: terraform-destroy
+  stage: terraform-deploy
   script:
     - terraform destroy -var-file=env/dev.tfvars --auto-approve
 
