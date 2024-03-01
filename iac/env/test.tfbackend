@@ -1,4 +1,4 @@
-resource_group_name  = "storage-resource-group-test"
+storage_resource_group_name  = "storage-resource-group-test"
 storage_account_name = "yuyastatefiletest"
 container_name       = "tfstate"
 key                  = "terraform.tfstate"

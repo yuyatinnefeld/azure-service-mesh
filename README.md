@@ -68,10 +68,10 @@ Execute the following commands to clean up resources:
 az ad sp delete --id $AZURE_APP_ID
 
 # Delete the storage account
-az storage account delete --name $AZURE_STATE_FILE_STORAGE_DEV --resource-group $AZURE_RESOURCE_GROUP_DEV
+az storage account delete --name $AZURE_STATE_FILE_STORAGE_DEV --resource-group $azure_storage_resource_group_DEV
 
 # Delete the resource group
-az group delete --name $AZURE_RESOURCE_GROUP
+az group delete --name $azure_storage_resource_group
 
 # Delete the terraform resources
 terraform destroy -var-file=env/dev.tfvars

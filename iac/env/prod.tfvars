@@ -1,2 +1,5 @@
-### STORAGE BUCKET ENV ####
-azure_storage_account_name = "yuyatinnefeldbucketprod"
+#### GENERAL ENV ####
+env = "prod"
+
+#### CONTAINER REGISTRY ENV ####
+azure_container_registry_name = "yuyatinnefeldContainerRegistryProd"

@@ -1,12 +1,12 @@
 data "azurerm_container_registry" "acr" {
   name                = "container-registry-resources"
-  resource_group_name = azurerm_resource_group.arg_container.name
+  resource_group_name = var.azure_container_resource_group
 }
 
 resource "azurerm_kubernetes_cluster" "aks_cluster_1" {
   name                = "example-aks1"
-  location            = var.azure_container_registry_location
-  resource_group_name = var.azure_container_resource_group
+  location            = azurerm_container_registry.acr.location
+  resource_group_name = azurerm_container_registry.acr.name
   dns_prefix          = "exampleaks1"
 
   default_node_pool {

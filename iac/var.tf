@@ -7,9 +7,13 @@ variable "azure_storage_location" {
   default = "germanywestcentral"
 }
 
-variable "azure_resource_group" {
+variable "azure_storage_resource_group" {
   type    = string
   default = "storage-resource-group"
+}
+
+variable "azure_storage_account_name" {
+  type = string
 }
 
 variable "azure_container_resouce_group" {
@@ -22,11 +26,11 @@ variable "azure_container_registry_location" {
   default = "West Europe"
 }
 
-variable "azure_storage_account_name" {
+variable "azure_container_registry_name" {
   type = string
 }
 
-variable "azure_container_registry_name" {
+variable "azure_container_resource_group" {
   type = string
 }
 
