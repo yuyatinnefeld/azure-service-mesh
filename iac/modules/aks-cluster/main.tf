@@ -4,8 +4,8 @@ data "azurerm_resource_group" "arg_example" {
 
 resource "azurerm_kubernetes_cluster" "aks_example" {
   name                = "example-aks1"
-  location            = azurerm_container_registry.arg_example.location
-  resource_group_name = azurerm_container_registry.arg_example.name
+  location            = azurerm_resource_group.arg_example.location
+  resource_group_name = azurerm_resource_group.arg_example.name
   dns_prefix          = "exampleaks1"
 
   default_node_pool {
