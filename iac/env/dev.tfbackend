@@ -2,4 +2,3 @@ storage_resource_group_name  = "storage-resource-group-dev"
 storage_account_name = "yuyastatefiledev"
 container_name       = "tfstate"
 key                  = "terraform.tfstate"
-azure_container_resource_group

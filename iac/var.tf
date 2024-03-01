@@ -1,4 +1,14 @@
+# Azure Service Principal
+variable "ARM_TENANT_ID" {}
+variable "ARM_SUBSCRIPTION_ID" {}
+variable "ARM_CLIENT_ID" {}
+variable "ARM_CLIENT_SECRET" {}
+
 variable "env" {
+  type = string
+}
+
+variable "azure_container_registry_name" {
   type = string
 }
 
@@ -26,16 +36,7 @@ variable "azure_container_registry_location" {
   default = "West Europe"
 }
 
-variable "azure_container_registry_name" {
-  type = string
-}
-
 variable "azure_container_resource_group" {
-  type = string
+  type    = string
+  default = "yuyatinnefeldbucket"
 }
-
-# Azure Service Principal
-variable "ARM_TENANT_ID" {}
-variable "ARM_SUBSCRIPTION_ID" {}
-variable "ARM_CLIENT_ID" {}
-variable "ARM_CLIENT_SECRET" {}
