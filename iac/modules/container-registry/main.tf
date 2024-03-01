@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "arg_container" {
-  name     = var.azure_container_resouce_group
+  name     = var.azure_container_resource_group
   location = var.azure_container_registry_location
 }
 

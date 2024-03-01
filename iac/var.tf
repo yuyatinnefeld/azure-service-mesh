@@ -23,12 +23,8 @@ variable "azure_storage_resource_group" {
 }
 
 variable "azure_storage_account_name" {
-  type = string
-}
-
-variable "azure_container_resouce_group" {
   type    = string
-  default = "container-registry-resources"
+  default = "yuyatinnefeldbucket"
 }
 
 variable "azure_container_registry_location" {
@@ -38,5 +34,5 @@ variable "azure_container_registry_location" {
 
 variable "azure_container_resource_group" {
   type    = string
-  default = "yuyatinnefeldbucket"
+  default = "container-registry-resources"
 }
