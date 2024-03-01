@@ -39,5 +39,6 @@ module "aks_cluster" {
   source                         = "./modules/aks-cluster"
   env                            = var.env
   azure_container_resource_group = var.azure_container_resource_group
+  azure_container_registry_name  = var.azure_container_registry_name
   depends_on                     = [module.container_registry]
 }
