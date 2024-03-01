@@ -1,12 +1,12 @@
-resource "azurerm_resource_group" "arg_container" {
+resource "azurerm_resource_group" "arg_example" {
   name     = var.azure_container_resource_group
   location = var.azure_container_registry_location
 }
 
-resource "azurerm_container_registry" "acr" {
+resource "azurerm_container_registry" "acr_example" {
   name                = var.azure_container_registry_name
-  resource_group_name = azurerm_resource_group.arg_container.name
-  location            = azurerm_resource_group.arg_container.location
+  resource_group_name = azurerm_resource_group.arg_example.name
+  location            = azurerm_resource_group.arg_example.location
   sku                 = "Premium"
   admin_enabled       = false
 

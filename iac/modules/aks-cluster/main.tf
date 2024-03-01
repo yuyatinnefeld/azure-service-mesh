@@ -1,12 +1,11 @@
-data "azurerm_container_registry" "acr" {
-  name                = "container-registry-resources"
-  resource_group_name = var.azure_container_resource_group
+data "azurerm_resource_group" "arg_example" {
+  name = var.azure_container_resource_group
 }
 
-resource "azurerm_kubernetes_cluster" "aks_cluster_1" {
+resource "azurerm_kubernetes_cluster" "aks_example" {
   name                = "example-aks1"
-  location            = azurerm_container_registry.acr.location
-  resource_group_name = azurerm_container_registry.acr.name
+  location            = azurerm_container_registry.arg_example.location
+  resource_group_name = azurerm_container_registry.arg_example.name
   dns_prefix          = "exampleaks1"
 
   default_node_pool {
@@ -24,8 +23,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster_1" {
   }
 }
 
-resource "azurerm_role_assignment" "example" {
-  principal_id                     = azurerm_kubernetes_cluster.aks_cluster_1.kubelet_identity[0].object_id
+resource "azurerm_role_assignment" "ars_example" {
+  principal_id                     = azurerm_kubernetes_cluster.aks_example.kubelet_identity[0].object_id
   role_definition_name             = "AcrPull"
   scope                            = azurerm_container_registry.acr.id
   skip_service_principal_aad_check = true
