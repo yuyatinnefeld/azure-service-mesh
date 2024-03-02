@@ -67,8 +67,8 @@ terraform-plan-dev:
   extends: 
     - .terraform-plan
   rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
     - changes:
-        - '$CI_COMMIT_BRANCH == "develop"'
         - /iac/*.{tf}
         - /iac/**/*.{tf}
         - /iac/**/**/*.{tf}
@@ -100,7 +100,7 @@ terraform-destroy-dev:
     - changes:
         - '$CI_COMMIT_BRANCH == "develop"'
 
-############################ Push Docker Images ############################
+############################ Create Infrastructure Resources ############################
 
 .push-docker-image:
   image: mcr.microsoft.com/azure-cli
