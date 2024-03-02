@@ -8,7 +8,7 @@ data "azurerm_container_registry" "acr_example" {
 }
 
 resource "azurerm_kubernetes_cluster" "aks_example" {
-  name                = "example-aks1"
+  name                = "myAKSCluster"
   location            = data.azurerm_resource_group.arg_example.location
   resource_group_name = data.azurerm_resource_group.arg_example.name
   dns_prefix          = "exampleaks1"
@@ -33,4 +33,5 @@ resource "azurerm_role_assignment" "ars_example" {
   role_definition_name             = "AcrPull"
   scope                            = data.azurerm_container_registry.acr_example.id
   skip_service_principal_aad_check = true
+  depends_on = [ azurerm_kubernetes_cluster.aks_example ]
 }
