@@ -67,7 +67,11 @@ terraform-plan-dev:
   extends: 
     - .terraform-plan
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - changes:
+        - '$CI_COMMIT_BRANCH == "develop"'
+        - /iac/*.{tf}
+        - /iac/**/*.{tf}
+        - /iac/**/**/*.{tf}
 
 .terraform-apply:
   stage: deploy
@@ -79,7 +83,9 @@ terraform-apply-dev:
   extends: 
     - .terraform-apply
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop" && changes("iac/*")'
+    - changes:
+        - '$CI_COMMIT_BRANCH == "develop"'
+  needs: ['terraform-plan-dev']
 
 .terraform-destroy:
   stage: deploy
@@ -91,9 +97,10 @@ terraform-destroy-dev:
   extends: 
     - .terraform-destroy
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop" && changes("iac/*")'
+    - changes:
+        - '$CI_COMMIT_BRANCH == "develop"'
 
-############################ Create Infrastructure Resources ############################
+############################ Push Docker Images ############################
 
 .push-docker-image:
   image: mcr.microsoft.com/azure-cli
