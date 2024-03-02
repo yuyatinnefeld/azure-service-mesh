@@ -59,6 +59,12 @@ Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/gui
 AZURE_CLIENT_ID_DEV
 AZURE_CLIENT_SECRET
 
+### 4. Setup AKS Cluster
+```bash
+# Connect to the cluster
+az aks get-credentials --resource-group container-registry-resources --name myAKSCluster
+```
+
 
 ## Clean up
 Execute the following commands to clean up resources:
