@@ -83,8 +83,11 @@ terraform-apply-dev:
   extends: 
     - .terraform-apply
   rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
     - changes:
-        - '$CI_COMMIT_BRANCH == "develop"'
+        - /iac/*.{tf}
+        - /iac/**/*.{tf}
+        - /iac/**/**/*.{tf}
   needs: ['terraform-plan-dev']
 
 .terraform-destroy:
