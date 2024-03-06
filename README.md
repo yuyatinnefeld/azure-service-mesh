@@ -59,7 +59,13 @@ Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/gui
 AZURE_CLIENT_ID_DEV
 AZURE_CLIENT_SECRET
 
-### 4. Setup AKS Cluster
+### 4. Setup Container Registry
+Open Azure Container Registry and activate admin user
+```bash
+az acr update -n $AZURE_CONTAINER_REGISTRY_NAME --admin-enabled true
+```
+
+### 5. Setup AKS Cluster
 ```bash
 # Connect to the cluster
 az aks get-credentials --resource-group container-registry-resources --name myAKSCluster

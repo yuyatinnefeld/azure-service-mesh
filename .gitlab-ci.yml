@@ -3,6 +3,8 @@ variables:
   AZURE_STORAGE_CONTAINER_NAME: tfstate
   AZURE_STORAGE_TF_STATEFILE: yuyastatefiledev
   TERRAFORM_DIR: iac
+  AZURE_CONTAINER_REGISTRY_NAME: yuyatinnefeldContainerRegistryDev
+  AZURE_CONTAINER_REGISTRY_REPO_NAME: yuyatinnefeldcontainerregistrydev.azurecr.io
 
 stages:
   - initial-setup
@@ -67,11 +69,9 @@ terraform-plan-dev:
   extends: 
     - .terraform-plan
   rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: $CI_COMMIT_BRANCH == "develop"
     - changes:
-        - /iac/*.{tf}
-        - /iac/**/*.{tf}
-        - /iac/**/**/*.{tf}
+        - /iac/*
 
 .terraform-apply:
   stage: deploy
@@ -83,11 +83,9 @@ terraform-apply-dev:
   extends: 
     - .terraform-apply
   rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: $CI_COMMIT_BRANCH == "develop"
     - changes:
-        - /iac/*.{tf}
-        - /iac/**/*.{tf}
-        - /iac/**/**/*.{tf}
+        - /iac/*
   needs: ['terraform-plan-dev']
 
 .terraform-destroy:
@@ -100,22 +98,24 @@ terraform-destroy-dev:
   extends: 
     - .terraform-destroy
   rules:
-    - changes:
-        - '$CI_COMMIT_BRANCH == "develop"'
+    - if: $CI_COMMIT_BRANCH == "develop"
 
 ############################ Create Infrastructure Resources ############################
 
 .push-docker-image:
-  image: mcr.microsoft.com/azure-cli
+  image: docker:latest
   stage: deploy
   script:
-    - echo 'push docker image to azure container registry'
+    - docker build -t $IMAGE_NAME ./microservices/apps/hello-world-app
+    - docker tag hello-world $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
+    - docker push $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
 
 push-docker-image-dev:
   extends: 
     - .push-docker-image
   before_script:
-    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
+    - docker login $AZURE_CONTAINER_REGISTRY_REPO_NAME -u $AZURE_CONTAINER_REGISTRY_NAME -p $AZURE_CONTAINER_REGISTRY_USER_PWD
+
   variables:
     ENV: Dev
   rules:
