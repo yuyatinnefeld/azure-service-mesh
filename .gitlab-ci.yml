@@ -7,6 +7,7 @@ variables:
   AZURE_CONTAINER_REGISTRY_REPO_NAME: yuyatinnefeldcontainerregistrydev.azurecr.io
 
 stages:
+  - docker-push
   - initial-setup
   - terraform-plan
   - deploy
@@ -104,7 +105,7 @@ terraform-destroy-dev:
 
 .push-docker-image:
   image: docker:latest
-  stage: deploy
+  stage: docker-push
   script:
     - docker build -t $IMAGE_NAME ./microservices/apps/hello-world-app
     - docker tag hello-world $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
@@ -114,6 +115,7 @@ push-docker-image-dev:
   extends: 
     - .push-docker-image
   before_script:
+    - docker ps # test
     - docker login $AZURE_CONTAINER_REGISTRY_REPO_NAME -u $AZURE_CONTAINER_REGISTRY_NAME -p $AZURE_CONTAINER_REGISTRY_USER_PWD
 
   variables:

@@ -60,7 +60,8 @@ AZURE_CLIENT_ID_DEV
 AZURE_CLIENT_SECRET
 
 ### 4. Setup Container Registry
-Open Azure Container Registry and activate admin user
+1. Open Azure Container Registry and Activate Admin User
+
 ```bash
 az acr update -n $AZURE_CONTAINER_REGISTRY_NAME --admin-enabled true
 ```
