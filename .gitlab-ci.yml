@@ -102,7 +102,7 @@ terraform-destroy-dev:
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
 
-############################ Create Infrastructure Resources ############################
+############################ Push Docker Images ############################
 
 .push-docker-image:
   stage: docker-push
