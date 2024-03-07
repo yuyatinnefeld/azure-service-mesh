@@ -8,7 +8,7 @@ resource "azurerm_container_registry" "acr_example" {
   resource_group_name = azurerm_resource_group.arg_example.name
   location            = azurerm_resource_group.arg_example.location
   sku                 = "Premium"
-  admin_enabled       = false
+  admin_enabled       = true
 
   georeplications {
     location                = "East US"
