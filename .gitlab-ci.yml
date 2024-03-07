@@ -120,14 +120,13 @@ terraform-destroy-dev:
     DOCKER_TLS_CERTDIR: ""
   script:
     - docker build -t $IMAGE_NAME ./microservices/apps/hello-world-app
-    - docker tag $$IMAGE_NAME $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
+    - docker tag $IMAGE_NAME $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
     - docker push $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
 
 push-docker-image-dev:
   extends: 
     - .push-docker-image
   before_script:
-    - docker ps
     - docker login $AZURE_CONTAINER_REGISTRY_REPO_NAME -u $AZURE_CONTAINER_REGISTRY_NAME -p $AZURE_CONTAINER_REGISTRY_USER_PWD
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
