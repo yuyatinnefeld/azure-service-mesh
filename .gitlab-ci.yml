@@ -5,6 +5,7 @@ variables:
   TERRAFORM_DIR: iac
   AZURE_CONTAINER_REGISTRY_NAME: yuyatinnefeldContainerRegistryDev
   AZURE_CONTAINER_REGISTRY_REPO_NAME: yuyatinnefeldcontainerregistrydev.azurecr.io
+  IMAGE_NAME: hello-world
 
 stages:
   - docker-push
@@ -104,21 +105,29 @@ terraform-destroy-dev:
 ############################ Create Infrastructure Resources ############################
 
 .push-docker-image:
-  image: docker:latest
   stage: docker-push
+  image:
+    name: docker:stable
+  services:
+   - name: docker:dind
+     alias: dockerdaemon
+  variables:
+    # Tell docker CLI how to talk to Docker daemon.
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    # Use the overlayfs driver for improved performance.
+    DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
   script:
     - docker build -t $IMAGE_NAME ./microservices/apps/hello-world-app
-    - docker tag hello-world $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
+    - docker tag $$IMAGE_NAME $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
     - docker push $AZURE_CONTAINER_REGISTRY_REPO_NAME/$IMAGE_NAME
 
 push-docker-image-dev:
   extends: 
     - .push-docker-image
   before_script:
-    - docker ps # test
+    - docker ps
     - docker login $AZURE_CONTAINER_REGISTRY_REPO_NAME -u $AZURE_CONTAINER_REGISTRY_NAME -p $AZURE_CONTAINER_REGISTRY_USER_PWD
-
-  variables:
-    ENV: Dev
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
