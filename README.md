@@ -60,7 +60,7 @@ AZURE_CLIENT_ID_DEV
 AZURE_CLIENT_SECRET
 
 ### 4. Setup Container Registry
-1. Open Azure Container Registry and Activate Admin User
+1. Activate Admin User
 
 ```bash
 az acr update -n $AZURE_CONTAINER_REGISTRY_NAME --admin-enabled true
@@ -71,7 +71,6 @@ az acr update -n $AZURE_CONTAINER_REGISTRY_NAME --admin-enabled true
 # Connect to the cluster
 az aks get-credentials --resource-group container-registry-resources --name myAKSCluster
 ```
-
 
 ## Clean up
 Execute the following commands to clean up resources:
