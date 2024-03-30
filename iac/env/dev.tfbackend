@@ -1,4 +1,4 @@
 resource_group_name  = "storage-resource-group-dev"
-storage_account_name = "yuyastatefiledev"
+storage_account_name = "terraformstatedev79432"
 container_name       = "tfstate"
 key                  = "terraform.tfstate"
