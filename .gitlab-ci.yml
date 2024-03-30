@@ -22,7 +22,7 @@ stages:
   script:
     - echo "🔍️ Checking if $AZURE_STORAGE_TF_STATEFILE$ENV exists"
     - |
-      if az storage account show --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
+      if az storage account show --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP-$ENV &> /dev/null; then
         echo "✨ $AZURE_STORAGE_TF_STATEFILE$ENV already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
