@@ -40,7 +40,7 @@ create-statefile-bucket-dev:
   extends: 
     - .create-statefile-bucket
   before_script:
-    - az login --service-principal --username $AZURE_APP_ID_DEV --password $AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
+    - az login --service-principal -u $AZURE_SERVICE_PRINCIPAL_APP_ID_DEV -p $APP_SECRET --tenant $AZURE_TENANT_DEV
   variables:
     AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
   rules:
