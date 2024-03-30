@@ -1,5 +1,5 @@
 variables:
-  AZURE_LOCATION: germanywestcentral
+  AZURE_LOCATION: westeurope
   AZURE_STORAGE_CONTAINER_NAME: tfstate
   AZURE_STORAGE_TF_STATEFILE: terraformstate
   TERRAFORM_DIR: iac
@@ -25,13 +25,11 @@ stages:
         echo "✨ $AZURE_STORAGE_TF_STATEFILE$ENV already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
-        echo "create default resource group"
-        az group create --location westeurope --resource-group storage-resource-group-default --tags $ENV
         echo "Create resource group..."
-        az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --tags $ENV
+        az group create --location $AZURE_LOCATION --resource-group $AZURE_STORAGE_RESOURCE_GROUP --tags $ENV
         echo "✅ DONE - resource group ✅"
         echo "Create storage account..."
-        az storage account create --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+        az storage account create --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false  --tags $ENV
         echo "✅ DONE - storage account ✅"
         echo "Create blob container..."
         az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE$ENV_NUM$ENV
