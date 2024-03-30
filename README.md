@@ -34,10 +34,10 @@ echo $SUBSCRIPTION_ID
 az ad sp list --query "[].{displayName:displayName, appId:appId, objectId:objectId}"
 
 # Create a new service principals and give owner role within the subscription
-SERVICE_PRINCIPAL_NAME=yuya-admin
-ROLE="Owner"
-
-az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --role $ROLE --scope /subscriptions/$SUBSCRIPTION_ID
+SERVICE_PRINCIPAL_NAME=yuyatinnefeld-dev-admin
+az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME
+AZURE_APP_ID_DEV="f99941a5-f7c3-4445-bc7c-45adb2b2c019"
+az role assignment create --assignee $AZURE_APP_ID_DEV --role "Owner" --scope /subscriptions/$SUBSCRIPTION_ID
 ```
 
 ### 2. Define GitLab CI/CD Variables
