@@ -17,25 +17,27 @@ This project serves as a learning platform for understanding microservices archi
 
 ## Setup Steps
 
+### 0. Create Azure Account
+
 ### 1. Create a Service Principal for Terraform user
 
 To create a service principal in Azure using Azure CLI, follow these steps:
 ```bash
-# Check Tenant Info (GCP Organization Info)
+# Check Tenant ID (GCP => Organization)
 az account tenant list
 
-# Chekc Subscription Info (GCP Project Info)
-subscriptionId="$(az account list --query "[?isDefault].id" --output tsv)"
-echo $subscriptionId
+# Chekc Subscription ID (GCP => Project)
+SUBSCRIPTION_ID="$(az account list --query "[?isDefault].id" --output tsv)"
+echo $SUBSCRIPTION_ID
 
 # List all service principals
 az ad sp list --query "[].{displayName:displayName, appId:appId, objectId:objectId}"
 
-# Create a new service principals
-az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME
+# Create a new service principals and give owner role within the subscription
+SERVICE_PRINCIPAL_NAME=yuya-admin
+ROLE="Owner"
 
-# Give owner role to the service principal
-az role assignment create --assignee $AZURE_APP_ID_DEV --role "Owner" --scope /subscriptions/$SUBSCRIPTION_ID
+az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --role $ROLE --scope /subscriptions/$SUBSCRIPTION_ID
 ```
 
 ### 2. Define GitLab CI/CD Variables
@@ -47,17 +49,23 @@ Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT
 
 ### 3. Authenticating to Azure using a Service Principal and a Client Secret 
 
-Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret
+Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret#1-creating-an-application-in-azure-active-directory
 
 1. Creating an Application in Azure Active Directory
-
-2. Assigning the Client Certificate to the Azure Active Directory Application
+```bash
+App-Name: Terraform-Application
+Supported-account-types: Default Directory only - Single tenant
+```
+2. Generating a Client Secret for the Azure Active Directory Application
 
 3. Allowing the Service Principal to manage the Subscription
 
 ###### Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
-AZURE_CLIENT_ID_DEV
-AZURE_CLIENT_SECRET
+AZURE_CLIENT_ID_DEV (Application / Client ID)
+AZURE_CLIENT_SECRET (Value of the Client Secret)
+
+4. Create a branch 'initial' and push the changes.
+
 
 ### 4. Setup Container Registry
 1. Activate Admin User
