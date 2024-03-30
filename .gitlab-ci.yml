@@ -33,7 +33,7 @@ stages:
         az storage account create --name $AZURE_STORAGE_TF_STATEFILE$ENV$ENV_NUM --resource-group $AZURE_STORAGE_RESOURCE_GROUP-$ENV --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false --tags $ENV
         echo "✅ DONE - storage account ✅"
         echo "Create blob container..."
-        az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE$ENV_NUM$ENV --tags $ENV
+        az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE$ENV_NUM$ENV
         echo "✅ DONE - blob container ✅"
       fi
 

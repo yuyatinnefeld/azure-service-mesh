@@ -25,14 +25,14 @@ module "storage_account" {
   azure_storage_account_name   = var.azure_storage_account_name
 }
 
-module "container_registry" {
-  source                            = "./modules/container-registry"
-  env                               = var.env
-  azure_container_registry_name     = var.azure_container_registry_name
-  azure_container_registry_location = var.azure_container_registry_location
-  azure_container_resource_group    = var.azure_container_resource_group
-  depends_on                        = [module.storage_account]
-}
+# module "container_registry" {
+#   source                            = "./modules/container-registry"
+#   env                               = var.env
+#   azure_container_registry_name     = var.azure_container_registry_name
+#   azure_container_registry_location = var.azure_container_registry_location
+#   azure_container_resource_group    = var.azure_container_resource_group
+#   depends_on                        = [module.storage_account]
+# }
 
 # module "aks_cluster" {
 #   source                         = "./modules/aks-cluster"
