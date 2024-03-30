@@ -1,12 +1,13 @@
 variables:
   AZURE_LOCATION: westeurope
+  AZURE_STORAGE_RESOURCE_GROUP: "storage-resource-group"
   AZURE_STORAGE_CONTAINER_NAME: tfstate
   AZURE_STORAGE_TF_STATEFILE: terraformstate
   TERRAFORM_DIR: iac
   AZURE_CONTAINER_REGISTRY_NAME: yuyatinnefeldContainerRegistryDev
   AZURE_CONTAINER_REGISTRY_REPO_NAME: yuyatinnefeldcontainerregistrydev.azurecr.io
   IMAGE_NAME: hello-world
-
+  
 stages:
   - initial-setup
   - terraform-plan
@@ -26,7 +27,7 @@ stages:
       else
         echo "🔧 The statefile bucket does not exist. Creating"
         echo "Create resource group..."
-        az group create --location westeurope --resource-group $AZURE_STORAGE_RESOURCE_GROUP --tags $ENV
+        az group create --location westeurope --resource-group "$AZURE_STORAGE_RESOURCE_GROUP-$ENV" --tags $ENV
         echo "✅ DONE - resource group ✅"
         echo "Create storage account..."
         az storage account create --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
@@ -42,12 +43,11 @@ create-statefile-bucket-dev:
   before_script:
     - az login --service-principal -u $AZURE_SERVICE_PRINCIPAL_APP_ID_DEV -p $AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV --tenant $AZURE_TENANT_DEV
   variables:
-    AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
-  rules:
-    - if: $CI_COMMIT_BRANCH == "initial"
-  variables:
     ENV_NUM: 79432
     ENV: dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == "initial"
+
 ############################ Create Infrastructure Resources ############################
 
 image: 
