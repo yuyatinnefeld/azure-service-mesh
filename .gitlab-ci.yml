@@ -1,7 +1,7 @@
 variables:
   AZURE_LOCATION: germanywestcentral
   AZURE_STORAGE_CONTAINER_NAME: tfstate
-  AZURE_STORAGE_TF_STATEFILE: yuyastatefiledev
+  AZURE_STORAGE_TF_STATEFILE: terraformstate
   TERRAFORM_DIR: iac
   AZURE_CONTAINER_REGISTRY_NAME: yuyatinnefeldContainerRegistryDev
   AZURE_CONTAINER_REGISTRY_REPO_NAME: yuyatinnefeldcontainerregistrydev.azurecr.io
@@ -19,18 +19,18 @@ stages:
   image: mcr.microsoft.com/azure-cli
   stage: initial-setup
   script:
-    - echo "🔍️ Checking if $AZURE_STORAGE_TF_STATEFILE exists"
+    - echo "🔍️ Checking if $AZURE_STORAGE_TF_STATEFILE$ENV exists"
     - |
-      if az storage account show --name $AZURE_STORAGE_TF_STATEFILE --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
-        echo "✨ $AZURE_STORAGE_TF_STATEFILE already exists"
+      if az storage account show --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP &> /dev/null; then
+        echo "✨ $AZURE_STORAGE_TF_STATEFILE$ENV already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
         # Create resource group
         az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
         # Create storage account
-        az storage account create --name $AZURE_STORAGE_TF_STATEFILE --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
+        az storage account create --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
         # Create blob container
-        az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE
+        az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE$ENV
       fi
 
 create-statefile-bucket-dev:
@@ -42,7 +42,8 @@ create-statefile-bucket-dev:
     AZURE_STORAGE_RESOURCE_GROUP: storage-resource-group-dev
   rules:
     - if: $CI_COMMIT_BRANCH == "initial"
-
+  variables:
+    ENV: 79432dev
 ############################ Create Infrastructure Resources ############################
 
 image: 
