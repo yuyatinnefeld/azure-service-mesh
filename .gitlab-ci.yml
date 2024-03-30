@@ -8,10 +8,10 @@ variables:
   IMAGE_NAME: hello-world
 
 stages:
-  - docker-push
   - initial-setup
   - terraform-plan
-  - deploy
+  - terraform-apply
+  - docker-push
 
 ############################ Create Terraform Statefile Bucket ############################
 
@@ -25,12 +25,15 @@ stages:
         echo "✨ $AZURE_STORAGE_TF_STATEFILE$ENV already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
-        # Create resource group
+        echo "Create resource group..."
         az group create --name $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION
-        # Create storage account
+        echo "✅ DONE - resource group ✅"
+        echo "Create storage account..."
         az storage account create --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false
-        # Create blob container
+        echo "✅ DONE - storage account ✅"
+        echo "Create blob container..."
         az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE$ENV
+        echo "✅ DONE - blob container ✅"
       fi
 
 create-statefile-bucket-dev:
@@ -77,7 +80,7 @@ terraform-plan-dev:
         - /iac/*
 
 .terraform-apply:
-  stage: deploy
+  stage: terraform-apply
   script:
     - terraform apply tfplan
   when: manual
@@ -92,7 +95,7 @@ terraform-apply-dev:
   needs: ['terraform-plan-dev']
 
 .terraform-destroy:
-  stage: deploy
+  stage: terraform-apply
   script:
     - terraform destroy -var-file=env/dev.tfvars --auto-approve
   when: manual
