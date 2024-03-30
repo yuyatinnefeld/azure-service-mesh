@@ -14,7 +14,7 @@ variable "azure_container_registry_name" {
 
 variable "azure_storage_location" {
   type    = string
-  default = "germanywestcentral"
+  default = "westeurope"
 }
 
 variable "azure_storage_resource_group" {
@@ -24,7 +24,7 @@ variable "azure_storage_resource_group" {
 
 variable "azure_storage_account_name" {
   type    = string
-  default = "yuyatinnefeldbucket"
+  default = "yuyabucketexample"
 }
 
 variable "azure_container_registry_location" {
