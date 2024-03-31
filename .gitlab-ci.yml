@@ -20,10 +20,10 @@ stages:
   image: mcr.microsoft.com/azure-cli
   stage: initial-setup
   script:
-    - echo "🔍️ Checking if $AZURE_STORAGE_TF_STATEFILE$ENV exists"
+    - echo "🔍️ Checking if $AZURE_STORAGE_TF_STATEFILE$ENV$ENV_NUM exists"
     - |
-      if az storage account show --name $AZURE_STORAGE_TF_STATEFILE$ENV --resource-group $AZURE_STORAGE_RESOURCE_GROUP-$ENV &> /dev/null; then
-        echo "✨ $AZURE_STORAGE_TF_STATEFILE$ENV already exists"
+      if az storage account show --name $AZURE_STORAGE_TF_STATEFILE$ENV$ENV_NUM --resource-group $AZURE_STORAGE_RESOURCE_GROUP-$ENV &> /dev/null; then
+        echo "✨ $AZURE_STORAGE_TF_STATEFILE$ENV$ENV_NUM already exists"
       else
         echo "🔧 The statefile bucket does not exist. Creating"
         echo "Create resource group..."
@@ -33,7 +33,7 @@ stages:
         az storage account create --name $AZURE_STORAGE_TF_STATEFILE$ENV$ENV_NUM --resource-group $AZURE_STORAGE_RESOURCE_GROUP-$ENV --location $AZURE_LOCATION --sku Standard_RAGRS --kind StorageV2 --allow-blob-public-access false --tags $ENV
         echo "✅ DONE - storage account ✅"
         echo "Create blob container..."
-        az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE$ENV_NUM$ENV
+        az storage container create --name $AZURE_STORAGE_CONTAINER_NAME --account-name $AZURE_STORAGE_TF_STATEFILE$ENV$ENV_NUM
         echo "✅ DONE - blob container ✅"
       fi
 
@@ -60,6 +60,7 @@ before_script:
   - export TF_VAR_ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID_DEV
   - export TF_VAR_ARM_CLIENT_ID=$AZURE_CLIENT_ID_DEV
   - export TF_VAR_ARM_CLIENT_SECRET=$AZURE_CLIENT_SECRET
+  - export ARM_ACCESS_KEY=$(az storage account keys list --resource-group $AZURE_STORAGE_RESOURCE_GROUP-$ENV --account-name $AZURE_STORAGE_TF_STATEFILE --query '[0].value' -o tsv)
   - cd $TERRAFORM_DIR
   - terraform init -backend-config="env/dev.tfbackend"
 
