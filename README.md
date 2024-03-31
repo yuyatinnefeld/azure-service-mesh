@@ -49,7 +49,9 @@ Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT
 
 ### 3. Authenticating to Azure using a Service Principal and a Client Secret 
 
-Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret#1-creating-an-application-in-azure-active-directory
+Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret
+
+Start up with the chapter "1. Creating an Application in Azure Active Directory"
 
 1. Creating an Application in Azure Active Directory
 ```bash
@@ -60,11 +62,11 @@ Supported-account-types: Default Directory only - Single tenant
 
 3. Allowing the Service Principal to manage the Subscription
 
-###### Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
+4. Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
 AZURE_CLIENT_ID_DEV (Application / Client ID)
 AZURE_CLIENT_SECRET (Value of the Client Secret)
 
-4. Create a branch 'initial' and push the changes.
+5. Create a branch 'initial' and push the changes.
 
 
 ### 4. Setup Container Registry
