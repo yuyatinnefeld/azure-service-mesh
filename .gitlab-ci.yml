@@ -60,7 +60,6 @@ before_script:
   - export TF_VAR_ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID_DEV
   - export TF_VAR_ARM_CLIENT_ID=$AZURE_CLIENT_ID_DEV
   - export TF_VAR_ARM_CLIENT_SECRET=$AZURE_CLIENT_SECRET
-  - export ARM_ACCESS_KEY=$(az storage account keys list --resource-group $AZURE_STORAGE_RESOURCE_GROUP-$ENV --account-name $AZURE_STORAGE_TF_STATEFILE --query '[0].value' -o tsv)
   - cd $TERRAFORM_DIR
   - terraform init -backend-config="env/dev.tfbackend"
 

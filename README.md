@@ -66,7 +66,13 @@ Supported-account-types: Default Directory only - Single tenant
 AZURE_CLIENT_ID_DEV (Application / Client ID)
 AZURE_CLIENT_SECRET (Value of the Client Secret)
 
-5. Create a branch 'initial' and push the changes.
+5. Run terraform init script in the Azure Cloud Shell
+```bash
+cd iac
+bash 0_tf_run.sh
+```
+
+6. Create a branch 'initial' and push the changes.
 
 
 ### 4. Setup Container Registry
