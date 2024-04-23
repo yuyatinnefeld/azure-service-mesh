@@ -6,14 +6,16 @@ import (
     "net/http"
 )
 
-func main() {
-    http.HandleFunc("/", hello)
-    fmt.Println("Server started")
-    log.Fatal(http.ListenAndServe(":8888", nil))
+func handler(w http.ResponseWriter, r *http.Request) {
+
+    appName := "hello-world-app"
+    version := "1.1.0"
+    language := "golang"
+    message := fmt.Sprintf("Server started appName: %s, Version: %s, Language: %s\n", appName, version, language)
+    fmt.Fprintf(w, message)
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    w.Header().Set("Content-Type", "application/json")
-    w.Write([]byte(`{"app":"hello-world-app", "version": "1.0.0", "language": "golang"}`))
-}	
+func main() {
+    http.HandleFunc("/", handler)
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}

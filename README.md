@@ -35,9 +35,12 @@ az ad sp list --query "[].{displayName:displayName, appId:appId, objectId:object
 
 # Create a new service principals and give owner role within the subscription
 SERVICE_PRINCIPAL_NAME=yuyatinnefeld-dev-admin
-az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME
 AZURE_APP_ID_DEV="f99941a5-f7c3-4445-bc7c-45adb2b2c019"
-az role assignment create --assignee $AZURE_APP_ID_DEV --role "Owner" --scope /subscriptions/$SUBSCRIPTION_ID
+az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME
+
+# Update Role
+SERVICE_PRINCIPAL_ID=$(az ad sp list --display-name $SERVICE_PRINCIPAL_NAME --query [].id --output tsv)
+az role assignment create --role "Owner" --assignee-object-id $SERVICE_PRINCIPAL_ID --scope /subscriptions/$SUBSCRIPTION_ID
 ```
 
 ### 2. Define GitLab CI/CD Variables
@@ -60,17 +63,19 @@ Supported-account-types: Default Directory only - Single tenant
 ```
 2. Generating a Client Secret for the Azure Active Directory Application
 
-3. Allowing the Service Principal to manage the Subscription
+3. Granting the Application access to manage resources in your Azure Subscription
+Access Control (IAM) > Add > Add role assignmen
 
-4. Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
-AZURE_CLIENT_ID_DEV (Application / Client ID)
-AZURE_CLIENT_SECRET (Value of the Client Secret)
-
-5. Run terraform init script in the Azure Cloud Shell
+4. Run terraform init script in the Azure Cloud Shell
 ```bash
 cd iac
 bash 0_tf_run.sh
 ```
+
+5. Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
+AZURE_CLIENT_ID_DEV (Application / Client ID)
+AZURE_CLIENT_SECRET (Value of the Client Secret)
+ARM_ACCESS_KEY
 
 6. Create a branch 'initial' and push the changes.
 

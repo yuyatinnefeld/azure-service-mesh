@@ -2,6 +2,29 @@
 
 ## Debug - Pull/Push into the ACR
 
+
+```bash
+DOCKER_REGISTRY_REPO_NAME=yuyatinnefeld
+IMAGE_NAME=hello-world:v1
+
+# build and check
+docker build -t $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME .
+docker run -p 8080:8080 -t $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+curl localhost:8080
+
+# test push
+docker image push $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+
+# clean up
+docker system prune --all
+
+# test pull
+docker run -it --rm -p 8888:8888 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+```
+
+
+## Debug - Pull/Push into the ACR
+
 ```bash
 AZURE_CONTAINER_REGISTRY_REPO_NAME=yuyatinnefeldcontainerregistrydev.azurecr.io
 IMAGE_NAME=hello-world:latest
