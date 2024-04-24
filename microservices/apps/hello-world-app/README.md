@@ -5,11 +5,11 @@
 
 ```bash
 DOCKER_REGISTRY_REPO_NAME=yuyatinnefeld
-IMAGE_NAME=hello-world:v1
+IMAGE_NAME=hello-world:1.2.0
 
 # build and check
 docker build -t $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME .
-docker run -p 8080:8080 -t $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+docker run -d --rm -e MESSAGE="MY_MESSAGE_ABCD" -p 8080:8080 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
 curl localhost:8080
 
 # test push
@@ -19,7 +19,13 @@ docker image push $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
 docker system prune --all
 
 # test pull
-docker run -it --rm -p 8888:8888 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+docker run -d --rm -e MESSAGE="MY_MESSAGE_ABCD" -p 8080:8080 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+
+# test with k8s
+cd microservices/deployment
+kubectl apply -f hello-world-app.yaml
+kubectl port-forward svc/hello-world-service 8080 &
+
 ```
 
 
