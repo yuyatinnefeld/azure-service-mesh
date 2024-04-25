@@ -36,7 +36,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		podID = "PODID_NOT_DEFINED"
 	}
 
-	text := fmt.Sprintf("Server started | appName: %s, Language: %s, Version: %s, Message: %s, Pod ID: %s\n", appName, language, version, message, podID)
+	text := fmt.Sprintf("Server started | appName: %s, Language: %s, Version: %s, Message: %s, podID: %s\n", appName, language, version, message, podID)
     fmt.Fprintf(w, text)
 }
 
