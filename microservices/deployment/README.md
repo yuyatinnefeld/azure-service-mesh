@@ -58,8 +58,6 @@ az acr repository show --name $CONTAINER_REGISTRY_NAME --repository hello-world
 ## Deploy the Application (Azure Shell)
 ```bash
 # connect to the cluster
-MY_AKS_CLUSTER_NAME=AKSCluster462b67
-MY_RESOURCE_GROUP_NAME=AKSResourceGroup462b67
 az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
 
 # verify
