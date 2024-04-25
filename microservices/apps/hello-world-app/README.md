@@ -1,7 +1,6 @@
 # Azure Container Registry
 
-## Debug - Pull/Push into the ACR
-
+## Debug - Pull/Push into the Dockerhub
 
 ```bash
 DOCKER_REGISTRY_REPO_NAME=yuyatinnefeld
@@ -20,12 +19,6 @@ docker system prune --all
 
 # test pull
 docker run -d --rm -e MESSAGE="MY_DOCKER_MESSAGE" -p 8080:8080 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
-
-# test with k8s
-cd microservices/deployment
-kubectl apply -f hello-world-app.yaml
-kubectl port-forward svc/hello-world-service 8080 &
-
 ```
 
 
