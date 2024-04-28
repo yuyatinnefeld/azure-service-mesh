@@ -16,31 +16,20 @@ type Response struct {
 	PodID    string `json:"podID"`
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func setEnvOrDefault(envName string, defaultValue string) string {
+	if val, ok := os.LookupEnv(envName); ok {
+		return val
+	}
+	return defaultValue
+}
+
+func getHandler(w http.ResponseWriter, r *http.Request) {
 	appName := "hello-world-app"
 	language := "golang"
 
-	var message string
-	var version string
-	var podID string
-
-	if vers, ok := os.LookupEnv("VERSION"); ok {
-		version = vers
-	} else {
-		version = "VERSION_NOT_DEFINED"
-	}
-
-	if msg, ok := os.LookupEnv("MESSAGE"); ok {
-		message = msg
-	} else {
-		message = "MESSAGE_NOT_DEFINED"
-	}
-
-	if podid, ok := os.LookupEnv("MY_POD_NAME"); ok {
-		podID = podid
-	} else {
-		podID = "PODID_NOT_DEFINED"
-	}
+	version := setEnvOrDefault("VERSION", "VERSION_NOT_DEFINED")
+	message := setEnvOrDefault("MESSAGE", "MESSAGE_NOT_DEFINED")
+	podID := setEnvOrDefault("MY_POD_NAME", "PODID_NOT_DEFINED")
 
 	response := Response{
 		AppName:  appName,
@@ -82,7 +71,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", getHandler)
 	http.HandleFunc("/post", postHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
