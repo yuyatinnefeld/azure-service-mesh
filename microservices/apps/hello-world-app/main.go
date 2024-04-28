@@ -23,7 +23,7 @@ func setEnvOrDefault(envName string, defaultValue string) string {
 	return defaultValue
 }
 
-func getHandler(w http.ResponseWriter, r *http.Request) {
+func fetchAPIResource(w http.ResponseWriter, r *http.Request) {
 	appName := "hello-world-app"
 	language := "golang"
 
@@ -44,7 +44,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func postHandler(w http.ResponseWriter, r *http.Request) {
+func createAPIResource(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var data map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&data)
@@ -71,7 +71,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", getHandler)
-	http.HandleFunc("/post", postHandler)
+	http.HandleFunc("/", fetchAPIResource)
+	http.HandleFunc("/post", createAPIResource)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
