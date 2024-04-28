@@ -4,7 +4,7 @@
 
 ```bash
 DOCKER_REGISTRY_REPO_NAME=yuyatinnefeld
-IMAGE_NAME=hello-world:1.3.0
+IMAGE_NAME=hello-world:1.4.0
 
 # build and check
 docker build -t $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME .
