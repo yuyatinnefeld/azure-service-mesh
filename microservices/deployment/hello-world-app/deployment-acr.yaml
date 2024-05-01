@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: hello-world-app
-          image: yuyatinnefeld/hello-world:1.4.0
+          image: yuyatinnefeldcontainerregistry.azurecr.io/hello-world:1.4.0
           ports:
             - containerPort: 8080
           env:
