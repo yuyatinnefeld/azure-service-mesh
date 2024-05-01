@@ -1,7 +1,7 @@
 # Deploy Locally
 ```bash
 cd microservices/deployment/hello-world-app
-kubectl apply -f local-deployment.yaml
+kubectl apply -f deployment-dockerhub.yaml
 kubectl port-forward svc/hello-world-service 8080 &
 ```
 
@@ -9,6 +9,7 @@ kubectl port-forward svc/hello-world-service 8080 &
 ```bash
 # setup env vars
 export RANDOM_ID="$(openssl rand -hex 3)"
+export RANDOM_ID="20240501"
 export MY_RESOURCE_GROUP_NAME="AKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="AKSCluster$RANDOM_ID"
@@ -64,28 +65,16 @@ az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_C
 kubectl get nodes
 
 # deploy
-kubectl apply -f azure-deployment.yaml
+kubectl apply -f deployment-acr.yaml
 ```
 
 ## Test the Application
 ```bash
-runtime="1 minute"
-endtime=$(date -ud "$runtime" +%s)
-while [[ $(date -u +%s) -le $endtime ]]
-do
-   STATUS=$(kubectl get pods -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-   echo $STATUS
-   if [ "$STATUS" == 'True' ]
-   then
-      export IP_ADDRESS=$(kubectl get service "hello-world-service" --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
-      echo "Service IP Address: $IP_ADDRESS"
-      break
-   else
-      sleep 10
-   fi
-done
+export IP_ADDRESS=$(kubectl get service "hello-world-service" --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
 
-curl $IP_ADDRESS
+echo "Service IP Address: $IP_ADDRESS"
+
+curl $IP_ADDRESS:8080
 ```
 
 ## Clean Up
