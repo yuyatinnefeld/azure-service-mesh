@@ -60,10 +60,10 @@ az acr update -n $CONTAINER_REGISTRY_NAME --admin-enabled true
 
 Create Container Registry Admin User
 ```bash
-Container Registry > Access key > Activate Admin User
+Container Registry > Settings > Access key > Activate Admin User
 
 USER="yuyatinnefeldcontainerregistry"
-PWD="xxxxxs"
+PWD="xxxxxx"
 ```
 
 Push Image into ACR (Local Terminal)
@@ -85,10 +85,19 @@ docker push $CONTAINER_REGISTRY_LOGIN_SERVER/$IMAGE_NAME
 
 # verify
 az acr repository show --name $CONTAINER_REGISTRY_NAME --repository hello-world
+az acr repository list --name $CONTAINER_REGISTRY_NAME --output table
 ```
 
-Deploy with ACR Image
+Add role assignment for the AKS-agentpool 
+1. ACR > Access Control > Role assignments > Add Role Assignment
+2. Search ArcPull > Next
+3. Select Member > $MY_AKS_CLUSTER_NAME-agentpool
+4. Review + Assign
+
+Deploy with the ACR Image
 ```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+
 kubectl apply -f deployment-acr.yaml
 ```
 
