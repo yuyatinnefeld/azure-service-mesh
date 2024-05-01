@@ -9,104 +9,56 @@ This project serves as a learning platform for understanding microservices archi
 - Continuous Integration and Continuous Deployment (CI/CD): GitLab
 - Service Mesh: Istio
 
-### Terraform Integration
-- IAM: Set up Microsoft Entra tenant for Terraform user.
-- Bucket: Create an Azure Storage Account for Statefile.
-- Docker Private Repo: Configure Azure Container Registry.
-- Kubernetes Cluster: Deploy an Azure Kubernetes Service (AKS) cluster.
+## Guideline
 
-## Setup Steps
+### 0. Testing Locally
 
-### 0. Create Azure Account
-
-### 1. Create a Service Principal for Terraform user
-
-To create a service principal in Azure using Azure CLI, follow these steps:
+#### Docker
 ```bash
-# Check Tenant ID (GCP => Organization)
-az account tenant list
-
-# Chekc Subscription ID (GCP => Project)
-SUBSCRIPTION_ID="$(az account list --query "[?isDefault].id" --output tsv)"
-echo $SUBSCRIPTION_ID
-
-# List all service principals
-az ad sp list --query "[].{displayName:displayName, appId:appId, objectId:objectId}"
-
-# Create a new service principals and give owner role within the subscription
-SERVICE_PRINCIPAL_NAME=yuyatinnefeld-dev-admin
-AZURE_APP_ID_DEV="f99941a5-f7c3-4445-bc7c-45adb2b2c019"
-az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME
-
-# Update Role
-SERVICE_PRINCIPAL_ID=$(az ad sp list --display-name $SERVICE_PRINCIPAL_NAME --query [].id --output tsv)
-az role assignment create --role "Owner" --assignee-object-id $SERVICE_PRINCIPAL_ID --scope /subscriptions/$SUBSCRIPTION_ID
+DOCKER_REGISTRY_REPO_NAME=yuyatinnefeld
+IMAGE_NAME=hello-world:1.4.0
+cd microservices/apps/hello-world-app
+docker build -t $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME .
+docker run -d --rm -e MESSAGE="MY_DOCKER_MESSAGE" -p 8080:8080 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+docker image push $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
 ```
 
-### 2. Define GitLab CI/CD Variables
-Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
-- AZURE_APP_ID_DEV
-- AZURE_SERVICE_PRINCIPAL_PASSWORD_DEV
-- AZURE_SUBSCRIPTION_ID_DEV
-- AZURE_TENANT_DEV
-
-### 3. Authenticating to Azure using a Service Principal and a Client Secret 
-
-Guide: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret
-
-Start up with the chapter "1. Creating an Application in Azure Active Directory"
-
-1. Creating an Application in Azure Active Directory
+#### K8S
 ```bash
-App-Name: Terraform-Application
-Supported-account-types: Default Directory only - Single tenant
-```
-2. Generating a Client Secret for the Azure Active Directory Application
-
-3. Granting the Application access to manage resources in your Azure Subscription
-Access Control (IAM) > Add > Add role assignmen
-
-4. Run terraform init script in the Azure Cloud Shell
-```bash
-cd iac
-bash 0_tf_run.sh
+cd microservices/deployment/hello-world-app
+kubectl apply -f deployment-dockerhub.yaml
+kubectl port-forward svc/hello-world-service 8080 &
 ```
 
-5. Create the following variables in GitLab CI/CD settings as Type=VARIABLE and NOT protected variable:
-AZURE_CLIENT_ID_DEV (Application / Client ID)
-AZURE_CLIENT_SECRET (Value of the Client Secret)
-ARM_ACCESS_KEY
+### 1. Initiate Azure Cloud Project
+[Link](azure-cloud/README.md#azure-management-group")
 
-6. Create a branch 'initial' and push the changes.
+### 2. Create ARG and AKS with az-cli
+[Link](azure-cloud/README.md#arg-aks")
 
+### 3. Deploy K8S App into AKS Cluster
+[Link](azure-cloud/README.md#aks-deploy")
 
-### 4. Setup Container Registry
-1. Activate Admin User
+### 4. Create ACR and Push Image into ARC
+[Link](azure-cloud/README.md#acr")
 
-```bash
-az acr update -n $AZURE_CONTAINER_REGISTRY_NAME --admin-enabled true
-```
+### 4. Setup Gitlab CICD Workflow and Terraform Integration
+- [Create a Terraform Service Principals](azure-cloud/README.md#service-principal")
+- [Define GitLab CI/CD Variables](iac/README.MD#cicd-variable")
+- [Configurate Terraform Service Principals](iac/README.MD#configure-service-principal")
 
-### 5. Setup AKS Cluster
-```bash
-# Connect to the cluster
-az aks get-credentials --resource-group container-registry-resources --name myAKSCluster
-```
+### 5. Setup Gitops Workflow for AKS Cluster
 
-## Clean up
+### 6. Clean Up Resources
 Execute the following commands to clean up resources:
-
 ```bash
-# Delete the service principal
-az ad sp delete --id $AZURE_APP_ID
+az acr repository delete -n $CONTAINER_REGISTRY_NAME --image $IMAGE_NAME
 
-# Delete the storage account
-az storage account delete --name $AZURE_STATE_FILE_STORAGE_DEV --resource-group $azure_storage_resource_group_DEV
+az aks delete --name $MY_AKS_CLUSTER_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 
-# Delete the resource group
-az group delete --name $azure_storage_resource_group
+az group delete -n $MY_RESOURCE_GROUP_NAME
 
-# Delete the terraform resources
-terraform destroy -var-file=env/dev.tfvars
+az account management-group subscription remove --name $MANAGEMENT_GROUP --subscription $SUBSCRIPTION_NAME
 ```
+
 

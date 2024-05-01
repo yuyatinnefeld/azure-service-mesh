@@ -4,6 +4,6 @@
 - [x] Configure Gitlab CICD 
 - [x] Create Azure Service Account 
 - [x] Push Docker Image
-- [ ] Create AKS Cluster via Terraform
-- [ ] Deploy Hello World App
+- [x] Deploy Hello World App
+- [ ] GitOps - Pull Based Workflow
 - [ ] Implement Service Mesh
