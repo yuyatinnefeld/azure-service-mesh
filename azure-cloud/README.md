@@ -100,6 +100,38 @@ az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_C
 
 kubectl apply -f deployment-acr.yaml
 ```
+## <a name="osm"></a> Create AKS with OSM (Open Service Mesh)
+
+Use -a to add any add-ons
+```bash
+# create an aks cluster
+az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys -a open-service-mesh
+
+# create namespaces
+kubectl create ns bookbuyer
+kubectl create ns bookstore
+kubectl create ns bookwarehouse
+
+# exec osm
+./osm.exe namespace add bookbuyer bookstore bookwarehouse
+
+# deploy services
+kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm/release-v0.11/docs/example/manifests/apps/bookbuyer.yaml
+kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm/release-v0.11/docs/example/manifests/apps/bookstore.yaml
+kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm/release-v0.11/docs/example/manifests/apps/bookwarehouse.yaml
+
+# verify
+export IP_ADDRESS=$(kubectl get service "bookstore" --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+echo "Service IP Address: $IP_ADDRESS"
+curl $IP_ADDRESS:8080
+
+# update traffic management
+kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm/release-v0.11/docs/example/manifests/apps/bookstore-v2.yaml
+
+kubectl apply -f microservices/deployment/hello-world-app/split-traffic.yaml
+curl $IP_ADDRESS:8080
+```
+
 
 ## <a name="service-principal"></a> Create a Service Principal
 
