@@ -5,5 +5,5 @@
 - [x] Create Azure Service Account 
 - [x] Push Docker Image
 - [x] Deploy Hello World App
+- [x] Implement Service Mesh
 - [ ] GitOps - Pull Based Workflow
-- [ ] Implement Service Mesh
