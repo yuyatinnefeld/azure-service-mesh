@@ -16,10 +16,10 @@ This project serves as a learning platform for understanding microservices archi
 #### Docker
 ```bash
 DOCKER_REGISTRY_REPO_NAME=yuyatinnefeld
-IMAGE_NAME=hello-world:1.4.0
+IMAGE_NAME=hello-world:1.5.0
 cd microservices/apps/hello-world-app
 docker build -t $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME .
-docker run -d --rm -e MESSAGE="MY_DOCKER_MESSAGE" -p 8080:8080 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
+docker run -d --rm -e MESSAGE="MY_DOCKER_MESSAGE" -e ENV="DEV" -p 8080:8080 $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
 docker image push $DOCKER_REGISTRY_REPO_NAME/$IMAGE_NAME
 ```
 
@@ -42,14 +42,17 @@ kubectl port-forward svc/hello-world-service 8080 &
 ### 4. Create ACR and Push Image into ARC
 [Link](azure-cloud/README.md#acr")
 
-### 4. Setup Gitlab CICD Workflow and Terraform Integration
+### 5. Create AKS with OSM (Open Service Mesh)
+[Link](azure-cloud/README.md#osm")
+
+### 6. Setup Gitlab CICD Workflow and Terraform Integration
 - [Create a Terraform Service Principals](azure-cloud/README.md#service-principal")
 - [Define GitLab CI/CD Variables](iac/README.MD#cicd-variable")
 - [Configurate Terraform Service Principals](iac/README.MD#configure-service-principal")
 
-### 5. Setup Gitops Workflow for AKS Cluster
+### 7. Setup Gitops Workflow for AKS Cluster
 
-### 6. Clean Up Resources
+### 8. Clean Up Resources
 Execute the following commands to clean up resources:
 ```bash
 az acr repository delete -n $CONTAINER_REGISTRY_NAME --image $IMAGE_NAME

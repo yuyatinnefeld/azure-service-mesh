@@ -9,11 +9,12 @@ import (
 )
 
 type Response struct {
-	AppName  string `json:"appName"`
-	Language string `json:"language"`
-	Version  string `json:"version"`
-	Message  string `json:"message"`
-	PodID    string `json:"podID"`
+	AppName    string `json:"appName"`
+	Language   string `json:"language"`
+	Version    string `json:"version"`
+	Message    string `json:"message"`
+	Enviroment string `json:"env"`
+	PodID      string `json:"podID"`
 }
 
 func setEnvOrDefault(envName string, defaultValue string) string {
@@ -29,6 +30,7 @@ func fetchAPIResource(w http.ResponseWriter, r *http.Request) {
 
 	version := setEnvOrDefault("VERSION", "VERSION_NOT_DEFINED")
 	message := setEnvOrDefault("MESSAGE", "MESSAGE_NOT_DEFINED")
+	env := setEnvOrDefault("ENV", "ENV_NOT_DEFINED")
 	podID := setEnvOrDefault("MY_POD_NAME", "PODID_NOT_DEFINED")
 
 	response := Response{
@@ -36,6 +38,7 @@ func fetchAPIResource(w http.ResponseWriter, r *http.Request) {
 		Language: language,
 		Version:  version,
 		Message:  message,
+		Enviroment: env,
 		PodID:    podID,
 	}
 

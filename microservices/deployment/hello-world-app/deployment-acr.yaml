@@ -16,14 +16,16 @@ spec:
     spec:
       containers:
         - name: hello-world-app
-          image: yuyatinnefeldcontainerregistry.azurecr.io/hello-world:1.4.0
+          image: yuyatinnefeldcontainerregistry.azurecr.io/hello-world:1.5.0
           ports:
             - containerPort: 8080
           env:
             - name: MESSAGE
               value: "MY_K8S_MESSAGE"
             - name: VERSION
-              value: "1.4.0"
+              value: "1.5.0"
+            - name: ENV
+              value: "DEV"
             - name: MY_POD_NAME
               valueFrom:
                 fieldRef:
