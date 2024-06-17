@@ -8,3 +8,5 @@
 7. update the parameter with the file "parameters.json"
 8. Define the resource group and password
 9. Define the DSN name after creating of the VM (you need this for ssh conn)
+10. SSH to Connect to a VM Server
+11. Install k8s,java,maven and another tools in vm `bash ./install.sh`
